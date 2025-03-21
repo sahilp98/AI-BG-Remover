@@ -1,44 +1,29 @@
 import { processImageWithMask, createMaskFromObjects } from '../utils/imageProcessor';
 import { refineMask } from '../utils/maskRefinement';
+import { removeBackground } from './backgroundRemoval';
 
 const API_KEY = process.env.REACT_APP_GOOGLE_CLOUD_API_KEY;
 
 export const processImage = async (file, quality) => {
   try {
     const base64Image = await fileToBase64(file);
-    console.log('Sending image to Vision API...');
-    
     const response = await fetch('https://vision.googleapis.com/v1/images:annotate?key=' + API_KEY, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         requests: [{
-          image: {
-            content: base64Image.split(',')[1]
-          },
-          features: [{
-            type: 'OBJECT_LOCALIZATION',
-            maxResults: 20  // Increased for better detection
-          }]
+          image: { content: base64Image.split(',')[1] },
+          features: [{ type: 'OBJECT_LOCALIZATION', maxResults: 20 }]
         }]
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
-    }
-
+    if (!response.ok) throw new Error('API request failed');
     const result = await response.json();
-    console.log('Vision API Response:', result);
-
-    if (!result.responses?.[0]?.localizedObjectAnnotations) {
-      throw new Error('No objects detected in the image');
+    
+    if (!result.responses?.[0]?.localizedObjectAnnotations?.length) {
+      throw new Error('No objects detected');
     }
-
-    const objects = result.responses[0].localizedObjectAnnotations;
-    console.log('Detected objects:', objects);
 
     const img = new Image();
     await new Promise((resolve, reject) => {
@@ -47,15 +32,15 @@ export const processImage = async (file, quality) => {
       img.src = base64Image;
     });
 
-    const maskCanvas = createMaskFromObjects(img.width, img.height, objects);
-    const maskDataUrl = maskCanvas.toDataURL('image/png');
-    const refinedMask = await refineMask(maskDataUrl, quality / 100);
-    
-    return {
-      mask: refinedMask
-    };
+    const processedImage = await removeBackground(
+      img,
+      result.responses[0].localizedObjectAnnotations,
+      quality
+    );
+
+    return { processedImage };
   } catch (error) {
-    console.error('Error processing image:', error);
+    console.error('Error:', error);
     throw error;
   }
 };

@@ -1,31 +1,35 @@
 import React, { useState } from 'react';
 import './App.css';
-import ImageUploader from './components/ImageUploader/ImageUploader';
-import LoadingSpinner from './components/LoadingSpinner/LoadingSpinner';
-import ResultDisplay from './components/ResultDisplay/ResultDisplay';
-import PreviewMode from './components/PreviewMode/PreviewMode';
+import ModernHeader from './components/ModernHeader/ModernHeader';
+import UploadArea from './components/UploadArea/UploadArea';
+import ModernSpinner from './components/ModernSpinner/ModernSpinner';
+import ResultsView from './components/ResultsView/ResultsView';
+import ImageAdjuster from './components/ImageAdjuster/ImageAdjuster';
 import { processImage, finalizeImage } from './services/imageService';
-import Header from './components/Header/Header';
-import StepIndicator from './components/StepIndicator/StepIndicator';
 
 function App() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState(null);
   const [processedImage, setProcessedImage] = useState(null);
+  const [originalImage, setOriginalImage] = useState(null);
   const [quality, setQuality] = useState(80);
-  const [previewData, setPreviewData] = useState(null);
-  const [currentStep, setCurrentStep] = useState(1);
+  const [isAdjusting, setIsAdjusting] = useState(false);
+  const [currentFile, setCurrentFile] = useState(null);
 
   const handleImageSelect = async (file) => {
-    setCurrentStep(2);
+    setCurrentFile(file);
     setIsProcessing(true);
     setError(null);
-    setProcessedImage(null);
-    setPreviewData(null);
-    
+    await processImageWithQuality(file);
+  };
+
+  const processImageWithQuality = async (file) => {
     try {
+      setIsProcessing(true);
+      setOriginalImage(URL.createObjectURL(file));
       const { mask } = await processImage(file, quality);
-      setPreviewData({ original: URL.createObjectURL(file), mask });
+      const result = await finalizeImage(URL.createObjectURL(file), mask);
+      setProcessedImage(result);
     } catch (err) {
       setError('Failed to process image. Please try again.');
       console.error('Error:', err);
@@ -34,39 +38,43 @@ function App() {
     }
   };
 
-  const handleConfirm = async () => {
-    setCurrentStep(3);
-    if (!previewData) return;
-    
-    setIsProcessing(true);
-    try {
-      const result = await finalizeImage(previewData.original, previewData.mask, quality);
-      setProcessedImage(result);
-      setPreviewData(null);
-    } catch (err) {
-      setError('Failed to process image. Please try again.');
-    } finally {
-      setIsProcessing(false);
+  const handleAdjustmentApply = async () => {
+    if (currentFile) {
+      await processImageWithQuality(currentFile);
+      setIsAdjusting(false);
     }
   };
 
   return (
     <div className="App">
-      <Header />
+      <ModernHeader />
       <main>
-        <StepIndicator currentStep={currentStep} />
-        <ImageUploader onImageSelect={handleImageSelect} />
-        {previewData && (
-          <PreviewMode
-            originalImage={previewData.original}
-            mask={previewData.mask}
-            onConfirm={handleConfirm}
-            onAdjust={() => setQuality(prev => Math.max(prev - 10, 0))}
+        {!isProcessing && !processedImage && (
+          <UploadArea onImageSelect={handleImageSelect} />
+        )}
+        {isProcessing && <ModernSpinner />}
+        {error && <div className="error-message">{error}</div>}
+        {processedImage && !isAdjusting && (
+          <ResultsView 
+            processedImage={processedImage}
+            originalImage={originalImage}
+            onAdjust={() => setIsAdjusting(true)}
+            onTryAgain={() => {
+              setProcessedImage(null);
+              setOriginalImage(null);
+              setCurrentFile(null);
+            }}
           />
         )}
-        {isProcessing && <LoadingSpinner />}
-        {error && <p className="error-message">{error}</p>}
-        {processedImage && <ResultDisplay processedImage={processedImage} />}
+        {isAdjusting && (
+          <div className="adjustment-container">
+            <ImageAdjuster
+              quality={quality}
+              onQualityChange={setQuality}
+              onApply={handleAdjustmentApply}
+            />
+          </div>
+        )}
       </main>
     </div>
   );

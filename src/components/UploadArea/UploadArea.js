@@ -3,12 +3,20 @@ import { useDropzone } from 'react-dropzone';
 import './UploadArea.css';
 
 function UploadArea({ onImageSelect }) {
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: useCallback(files => {
-      if (files?.[0]) onImageSelect(files[0]);
+      const file = files[0];
+      if (file.size > MAX_FILE_SIZE) {
+        alert('File size must be less than 5MB');
+        return;
+      }
+      onImageSelect(file);
     }, [onImageSelect]),
     accept: { 'image/*': ['.jpeg', '.jpg', '.png'] },
-    multiple: false
+    multiple: false,
+    maxSize: MAX_FILE_SIZE
   });
 
   return (

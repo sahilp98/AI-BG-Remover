@@ -2,7 +2,7 @@
   text-align: center;
   padding: 20px;
   min-height: 100vh;
-  background-color: #f8fafc;
+  background-color: #fff;
 }
 
 .App-header {
@@ -27,9 +27,16 @@ main {
 }
 
 .error-message {
-  color: #ef4444;
+  max-width: 800px;
+  margin: 2rem auto;
   padding: 1rem;
-  background: #fee2e2;
+  background-color: #fee2e2;
+  color: #dc2626;
   border-radius: 0.5rem;
   text-align: center;
+}
+
+.adjustment-container {
+  max-width: 800px;
+  margin: 2rem auto;
 }
