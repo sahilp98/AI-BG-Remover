@@ -1,0 +1,28 @@
+.uploader-container {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.dropzone {
+  border: 2px dashed #cccccc;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropzone:hover {
+  border-color: #666666;
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+}

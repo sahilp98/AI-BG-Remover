@@ -1,0 +1,18 @@
+.uploaderContainer {
+  width: 100%;
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+.dropzone {
+  border: 2px dashed #cccccc;
+  border-radius: 4px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.dropzone:hover {
+  border-color: #666666;
+}
