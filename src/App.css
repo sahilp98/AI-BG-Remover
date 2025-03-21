@@ -1,6 +1,8 @@
 .App {
   text-align: center;
   padding: 20px;
+  min-height: 100vh;
+  background-color: #f8fafc;
 }
 
 .App-header {
@@ -16,7 +18,18 @@
 }
 
 main {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.error-message {
+  color: #ef4444;
+  padding: 1rem;
+  background: #fee2e2;
+  border-radius: 0.5rem;
+  text-align: center;
 }

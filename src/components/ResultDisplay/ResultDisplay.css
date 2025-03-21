@@ -1,0 +1,31 @@
+.result-container {
+  margin: 20px auto;
+  max-width: 500px;
+}
+
+.image-preview {
+  background: #f0f0f0;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.image-preview img {
+  max-width: 100%;
+  height: auto;
+}
+
+.download-button {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+.download-button:hover {
+  background: #2980b9;
+}
