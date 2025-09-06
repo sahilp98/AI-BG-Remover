@@ -2,21 +2,36 @@
   max-width: 800px;
   margin: 2rem auto;
   padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .modern-dropzone {
+  width: 100%;
   border: 2px dashed #e5e7eb;
-  border-radius: 1rem;
+  border-radius: 0.75rem;
   padding: 3rem 2rem;
   text-align: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .modern-dropzone:hover {
-  border-color: #818cf8;
-  background: #f8fafc;
+  border-color: #4f46e5;
+  background: #f9fafb;
+}
+
+.modern-dropzone.active {
+  border-color: #4f46e5;
+  background: #f5f7ff;
+}
+
+.modern-dropzone.reject {
+  border-color: #ef4444;
+  background: #fef2f2;
 }
 
 .upload-content {
@@ -29,34 +44,55 @@
 .upload-icon {
   width: 48px;
   height: 48px;
-  color: #818cf8;
+  color: #4f46e5;
+  margin-bottom: 0.5rem;
 }
 
 .upload-content h2 {
   margin: 0;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #1a1a1a;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111827;
 }
 
-.upload-content p {
+.upload-description {
   margin: 0;
-  color: #666;
+  color: #6b7280;
+  font-size: 1.1rem;
 }
 
 .upload-button {
-  margin-top: 1rem;
-  padding: 0.75rem 1.5rem;
-  background-color: #818cf8;
+  margin-top: 1.5rem;
+  padding: 0.75rem 2rem;
+  background-color: #4f46e5;
   color: white;
   border: none;
   border-radius: 0.5rem;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .upload-button:hover {
-  background-color: #6366f1;
+  background-color: #4338ca;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.upload-button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.upload-error {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: #fef2f2;
+  color: #b91c1c;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  width: 100%;
+  text-align: center;
 }

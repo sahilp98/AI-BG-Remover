@@ -1,4 +1,4 @@
-export const refineMask = (maskData, threshold = 0.5) => {
+export const refineMask = (maskData, threshold = 0.3) => {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
   const img = new Image();
@@ -14,8 +14,8 @@ export const refineMask = (maskData, threshold = 0.5) => {
 
       // Apply threshold to make mask more defined
       for (let i = 0; i < data.length; i += 4) {
-        const alpha = data[i + 3] / 255;
-        data[i + 3] = alpha > threshold ? 255 : 0;
+        const luminance = data[i] / 255;
+        data[i + 3] = luminance > threshold ? 255 : 0;
       }
 
       ctx.putImageData(imageData, 0, 0);

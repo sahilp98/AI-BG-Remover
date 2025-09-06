@@ -64,10 +64,13 @@ export const processImageWithMask = async (originalImage, maskDataUrl) => {
         ctx.drawImage(originalImg, 0, 0);
         
         // Set composition mode to use mask
-        ctx.globalCompositeOperation = 'destination-in';
+        ctx.globalCompositeOperation = 'destination-atop';
         
-        // Draw mask (white areas will be kept, black will be transparent)
+        // Draw mask using precise segmentation data
         ctx.drawImage(maskImg, 0, 0, canvas.width, canvas.height);
+        
+        // Reset composition mode
+        ctx.globalCompositeOperation = 'source-over';
 
         console.log('Processing complete - mask applied');
         resolve(canvas.toDataURL('image/png'));

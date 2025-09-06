@@ -5,18 +5,22 @@ const createMaskFromObjects = (objects, width, height) => {
   const ctx = canvas.getContext('2d');
 
   // Fill with black (transparent)
-  ctx.fillStyle = 'black';
+  ctx.fillStyle = 'rgba(0, 0, 0, 0)';
   ctx.fillRect(0, 0, width, height);
 
-  // Draw objects in white (visible)
-  ctx.fillStyle = 'white';
+  // Draw objects with full opacity
+  ctx.fillStyle = 'rgba(255, 255, 255, 1)';
   objects.forEach(obj => {
-    const vertices = obj.boundingPoly.normalizedVertices;
+    const vertices = obj.segmentation?.normalizedVertices || obj.boundingPoly.normalizedVertices;
+    if (!vertices || vertices.length < 3) {
+      console.warn('Invalid object segmentation data:', obj);
+      return;
+    }
     ctx.beginPath();
     ctx.moveTo(vertices[0].x * width, vertices[0].y * height);
-    vertices.forEach((vertex, i) => {
-      if (i > 0) ctx.lineTo(vertex.x * width, vertex.y * height);
-    });
+    for (let i = 1; i < vertices.length; i++) {
+      ctx.lineTo(vertices[i].x * width, vertices[i].y * height);
+    }
     ctx.closePath();
     ctx.fill();
   });
